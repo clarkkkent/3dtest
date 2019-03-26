@@ -1,31 +1,47 @@
 import * as THREE from 'three';
+import fragment from './fragment.glsl';
+import vertex from './vertex.glsl';
+
 let OrbitControls = require('three-orbit-controls')(THREE);
 
 let container = document.getElementById('container');
 
-let camera, cube, controls, scene, renderer, geometry, geometry1, material,plane,another;
+let camera, sphere, controls, scene, renderer, geometry, texture, light, material;
 
 function init() {
     scene = new THREE.Scene();
+
     camera = new THREE.PerspectiveCamera(
         70,
         window.innerWidth / window.innerHeight,
         0.1, 100
     );
 
-    renderer = new THREE.WebGLRenderer({alpha:true});
-    // renderer.setPixelRatio(window.devicePixelRatio);
+    renderer = new THREE.WebGLRenderer();
+
+    renderer.setPixelRatio(window.devicePixelRatio);
     renderer.setSize(window.innerWidth, window.innerHeight);
 
     container.appendChild(renderer.domElement);
 
-    let geometry = new THREE.SphereGeometry( 5, 32, 32 );
-    let material = new THREE.MeshBasicMaterial( { color: 0x000000, wireframe:true});
-    cube = new THREE.Mesh( geometry, material);
+    geometry = new THREE.SphereGeometry( 2, 32, 32 );
+    texture = new THREE.TextureLoader().load("../images/base/texture2.jpg");
 
-    scene.add(cube);
+    material = new THREE.ShaderMaterial({
+        side: THREE.DoubleSide,
+        uniforms: {
+            time: {type:'f', value: 0},
+            img: {type: 't', value: texture}
+        },
+        vertexShader: vertex,
+        fragmentShader: fragment
+    });
 
-    camera.position.set( 0, 0, 5 );
+    sphere = new THREE.Mesh( geometry, material);
+    scene.add(sphere);
+
+
+    camera.position.set( 0, 0, 30 );
     controls = new OrbitControls(camera, renderer.domElement);
 }
 
@@ -45,4 +61,13 @@ function render() {
 
 init();
 animate();
+
+window.addEventListener('resize', resize);
+function resize() {
+    let w = window.innerWidth;
+    let h = window.innerHeight;
+    renderer.setSize(w, h);
+    camera.aspect = w/h;
+    camera.updateProjectionMatrix();
+}
 

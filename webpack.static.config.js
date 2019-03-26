@@ -177,7 +177,11 @@ module.exports = [
         }, {
           loader: [MiniCssExtractPlugin.loader, 'css-loader', path.resolve(__dirname, 'static/components/svg-css-loader/loader.js')].join('!'),
         }]
-      }],
+      },
+        {
+          test: /\.glsl$/,
+          loader: 'webpack-glsl-loader'
+        }],
     },
     plugins: [
       new CleanWebpackPlugin([path.resolve(__dirname, 'www/static')]),
