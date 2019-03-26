@@ -35,6 +35,8 @@
     "svg-sprite-webpack-plugin": "^1.1.0",
     "svg-spritemap-webpack-plugin": "^2.6.0",
     "svgson": "^2.1.1",
+    "three": "^0.102.1",
+    "three-orbit-controls": "^82.1.0",
     "uglifyjs-webpack-plugin": "^1.2.5",
     "underscore": ">=1.8.3",
     "webpack": "~4.12.0",

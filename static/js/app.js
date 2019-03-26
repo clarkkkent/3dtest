@@ -11,3 +11,4 @@ require('./common/respond.js');
 
 require('./field/phone.js');
 require('../components/smart-tabs/smart-tabs');
+require('./model');

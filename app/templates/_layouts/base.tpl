@@ -16,26 +16,6 @@
 <body>
     <div class="layout">
         <div class="layout__wrapper">
-            {include "_parts/header.tpl" class="layout__header"}
-
-            {render_flash:raw template='base/_flash.tpl'}
-
-            {block 'content-header'}
-                <div class="content-header">
-                    <div class="row">
-                        <div class="column large-12">
-                            {block 'breadcrumbs'}
-                                {render_breadcrumbs:raw template="base/_breadcrumbs.tpl"}
-                            {/block}
-
-                            {block 'heading'}
-
-                            {/block}
-                        </div>
-                    </div>
-                </div>
-            {/block}
-
             <div id="main" class="layout__main">
                 {block 'main'}
                     <div class="layout__content">
@@ -58,8 +38,6 @@
                 {/block}
             </div>
         </div>
-
-        {include "_parts/footer.tpl" class="layout__footer"}
     </div>
 
     {block 'core_js'}
