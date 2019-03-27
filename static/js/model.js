@@ -15,25 +15,55 @@ function init() {
     );
 
     renderer = new THREE.WebGLRenderer();
-
     renderer.setPixelRatio(window.devicePixelRatio);
     renderer.setSize(window.innerWidth, window.innerHeight);
-
     container.appendChild(renderer.domElement);
+    renderer.shadowMap.enabled = true;
+    renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+    renderer.gammaInput = true;
+    renderer.gammaOutput = true;
 
-    geometry = new THREE.SphereGeometry( 2, 32, 32 );
+    geometry = new THREE.SphereGeometry(2, 32, 32);
     texture = new THREE.TextureLoader().load("../images/base/texture4.jpg");
 
-
-    material = new THREE.MeshBasicMaterial({
-            map: texture
+    material = new THREE.MeshPhongMaterial({
+        color: 0xffffff,
+        map: texture,
+        opacity: 1
     });
 
-    sphere = new THREE.Mesh( geometry, material);
+    let ambient = new THREE.AmbientLight( 0xffffff, 0.1 );
+    scene.add( ambient );
+
+    let spotLight = new THREE.SpotLight(0xffffff, 2);
+    spotLight.position.set(10, 10, 15);
+    spotLight.angle = Math.PI / 4;
+    spotLight.penumbra = 0.05;
+    spotLight.decay = 2;
+    spotLight.distance = 200;
+    spotLight.castShadow = true;
+    spotLight.shadow.mapSize.width = 1024;
+    spotLight.shadow.mapSize.height = 1024;
+    spotLight.shadow.camera.near = 10;
+    spotLight.shadow.camera.far = 200;
+    scene.add(spotLight);
+
+    let lightHelper = new THREE.SpotLightHelper(spotLight);
+    scene.add(lightHelper);
+
+    let shadowCameraHelper = new THREE.CameraHelper(spotLight.shadow.camera);
+    scene.add(shadowCameraHelper);
+
+    sphere = new THREE.Mesh(geometry, material);
     scene.add(sphere);
 
-    camera.position.set( 0, 0, 30 );
+
+    camera.position.set(0, 0, 30);
     controls = new OrbitControls(camera, renderer.domElement);
+    controls.addEventListener('change', render);
+    controls.minDistance = 20;
+    controls.maxDistance = 500;
+    controls.enablePan = false;
 }
 
 function animate() {
@@ -51,11 +81,12 @@ init();
 animate();
 
 window.addEventListener('resize', resize);
+
 function resize() {
     let w = window.innerWidth;
     let h = window.innerHeight;
     renderer.setSize(w, h);
-    camera.aspect = w/h;
+    camera.aspect = w / h;
     camera.updateProjectionMatrix();
 }
 
