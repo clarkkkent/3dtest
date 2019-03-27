@@ -1,6 +1,7 @@
 import * as THREE from 'three';
-
+import * as OBJLoader from '../components/OBJLoader/OBJLoader';
 let OrbitControls = require('three-orbit-controls')(THREE);
+
 let container = document.getElementById('container');
 
 let camera, sphere, controls, scene, renderer, geometry, texture, light, material;
@@ -32,10 +33,30 @@ function init() {
         opacity: 1
     });
 
-    let ambient = new THREE.AmbientLight( 0xffffff, 0.1 );
+    sphere = new THREE.Mesh(geometry, material);
+    sphere.position.set(0, 0, 10);
+    scene.add(sphere);
+
+    let loader = new THREE.OBJLoader();
+
+    loader.load('../images/objects/Toilet.obj', (object) => {
+        let bath = object;
+        scene.add(bath);
+        bath.traverse(function(node) {
+            console.log(node);
+            if (node.material) {
+                node.material.side = THREE.DoubleSide;
+            }
+        });
+        bath.scale.x = 0.5;
+        bath.scale.y = 0.5;
+        bath.scale.z = 0.5;
+    });
+
+    let ambient = new THREE.AmbientLight( 0xffffff, 0.7 );
     scene.add( ambient );
 
-    let spotLight = new THREE.SpotLight(0xffffff, 2);
+    let spotLight = new THREE.SpotLight(0xffffff, 1);
     spotLight.position.set(10, 10, 15);
     spotLight.angle = Math.PI / 4;
     spotLight.penumbra = 0.05;
@@ -50,15 +71,10 @@ function init() {
 
     let lightHelper = new THREE.SpotLightHelper(spotLight);
     scene.add(lightHelper);
-
     let shadowCameraHelper = new THREE.CameraHelper(spotLight.shadow.camera);
-    scene.add(shadowCameraHelper);
+    // scene.add(shadowCameraHelper);
 
-    sphere = new THREE.Mesh(geometry, material);
-    scene.add(sphere);
-
-
-    camera.position.set(0, 0, 30);
+    camera.position.set(0, 0, 100);
     controls = new OrbitControls(camera, renderer.domElement);
     controls.addEventListener('change', render);
     controls.minDistance = 20;
