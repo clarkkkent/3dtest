@@ -2,9 +2,15 @@ import * as THREE from 'three';
 import * as OBJLoader from '../components/OBJLoader/OBJLoader';
 let OrbitControls = require('three-orbit-controls')(THREE);
 
+let raycaster = new THREE.Raycaster();
+let mouse = new THREE.Vector2();
+
 let container = document.getElementById('container');
 
-let camera, sphere1, sphere2, sphere3, sphere4, sphere5, sphere6, sphere7, sphere8, sphere9, controls, scene, renderer, geometry, texture, light, material;
+let camera, sphere1, sphere2, sphere3, sphere4, sphere5, sphere6, sphere7, sphere8, sphere9, controls, scene, renderer, geometry, texture, light, material, material1;
+
+let objects = [];
+
 
 function init() {
     scene = new THREE.Scene();
@@ -33,14 +39,22 @@ function init() {
         opacity: 1
     });
 
-    sphere1 = new THREE.Mesh(geometry, material);
+    material1 = new THREE.MeshPhongMaterial({
+        color: 0xffffff,
+        map: texture,
+        opacity: 1
+    });
+
+    sphere1 = new THREE.Mesh(geometry, material1);
     sphere1.position.set(0, 0, 10);
     scene.add(sphere1);
+    objects.push(sphere1);
 
-    sphere2 = new THREE.Mesh(geometry, material);
+    sphere2 = new THREE.Mesh(geometry, material1);
     sphere2.position.set(4, 0, 8.5);
     scene.add(sphere2);
     scene.add(sphere2);
+    objects.push(sphere2);
 
     sphere3 = new THREE.Mesh(geometry, material);
     sphere3.position.set(6.5, 0, 5);
@@ -82,14 +96,12 @@ function init() {
     scene.add(sphere9);
     scene.add(sphere9);
 
-
     let loader = new THREE.OBJLoader();
 
     loader.load('../images/objects/Toilet.obj', (object) => {
         let bath = object;
         // scene.add(bath);
         bath.traverse(function(node) {
-            console.log(node);
             if (node.material) {
                 node.material.side = THREE.DoubleSide;
             }
@@ -131,11 +143,21 @@ function init() {
 function animate() {
     requestAnimationFrame(animate);
     controls.update();
-
     render();
 }
 
+function onMouseMove( event ) {
+    mouse.x = ( event.clientX / window.innerWidth ) * 2 - 1;
+    mouse.y = - ( event.clientY / window.innerHeight ) * 2 + 1;
+    raycaster.setFromCamera(mouse, camera);
+    let intersects = raycaster.intersectObjects( objects );
+    if (intersects.length > 0 ) {
+        intersects[0].object.material.color.set(0x00ffff);
+    }
+}
+
 function render() {
+
     renderer.render(scene, camera);
 }
 
@@ -151,4 +173,6 @@ function resize() {
     camera.aspect = w / h;
     camera.updateProjectionMatrix();
 }
+
+window.addEventListener( 'mousemove', onMouseMove, false );
 
