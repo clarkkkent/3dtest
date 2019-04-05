@@ -1,178 +1,58 @@
 import * as THREE from 'three';
-import * as OBJLoader from '../components/OBJLoader/OBJLoader';
-let OrbitControls = require('three-orbit-controls')(THREE);
-
-let raycaster = new THREE.Raycaster();
-let mouse = new THREE.Vector2();
-
-let container = document.getElementById('container');
-
-let camera, sphere1, sphere2, sphere3, sphere4, sphere5, sphere6, sphere7, sphere8, sphere9, controls, scene, renderer, geometry, texture, light, material, material1;
-
-let objects = [];
+import {PerspectiveCamera} from "three";
+let scene;
+let camera;
+let renderer;
+let light;
+let texture;
 
 
-function init() {
-    scene = new THREE.Scene();
+export class Renderer {
+    constructor(options) {
+        this.container = document.querySelector(options.container);
+        this.init();
+        this.animate();
+        this.render();
+    }
 
-    camera = new THREE.PerspectiveCamera(
-        70,
-        window.innerWidth / window.innerHeight,
-        0.1, 1000
-    );
+    init = () => {
+        this.initScene();
+        this.initCamera();
+        this.initRenderer();
+        window.addEventListener('resize', this.resize);
+    };
 
-    renderer = new THREE.WebGLRenderer();
-    renderer.setPixelRatio(window.devicePixelRatio);
-    renderer.setSize(window.innerWidth, window.innerHeight);
-    container.appendChild(renderer.domElement);
-    renderer.shadowMap.enabled = true;
-    renderer.shadowMap.type = THREE.PCFSoftShadowMap;
-    renderer.gammaInput = true;
-    renderer.gammaOutput = true;
+    initScene = () => {
+        scene = new THREE.Scene();
+    };
 
-    geometry = new THREE.SphereGeometry(2, 32, 32);
-    texture = new THREE.TextureLoader().load("../images/base/texture4.jpg");
+    initCamera = () => {
+        camera = new PerspectiveCamera(45, window.innerWidth/window.innerHeight, 1, 1000);
+    };
 
-    material = new THREE.MeshPhongMaterial({
-        color: 0xffffff,
-        map: texture,
-        opacity: 1
-    });
+    initRenderer = () => {
+        renderer = new THREE.WebGLRenderer();
+        renderer.setPixelRatio(window.devicePixelRatio);
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        this.container.appendChild(renderer.domElement);
+    };
 
-    material1 = new THREE.MeshPhongMaterial({
-        color: 0xffffff,
-        map: texture,
-        opacity: 1
-    });
+    render = () => {
+        camera.lookAt(scene.position);
+        renderer.render(scene, camera);
+        this.resize();
+    };
 
-    sphere1 = new THREE.Mesh(geometry, material1);
-    sphere1.position.set(0, 0, 10);
-    scene.add(sphere1);
-    objects.push(sphere1);
+    animate = () => {
+        requestAnimationFrame(this.animate);
+        this.render();
+    };
 
-    sphere2 = new THREE.Mesh(geometry, material1);
-    sphere2.position.set(4, 0, 8.5);
-    scene.add(sphere2);
-    scene.add(sphere2);
-    objects.push(sphere2);
-
-    sphere3 = new THREE.Mesh(geometry, material);
-    sphere3.position.set(6.5, 0, 5);
-    scene.add(sphere3);
-    scene.add(sphere3);
-
-    sphere4 = new THREE.Mesh(geometry, material);
-    sphere4.position.set(5.5, 0, 0.9);
-    scene.add(sphere4);
-    scene.add(sphere4);
-
-    sphere5 = new THREE.Mesh(geometry, material);
-    sphere5.position.set(2.3, 0, -1.9);
-    scene.add(sphere5);
-    scene.add(sphere5);
-
-    sphere6 = new THREE.Mesh(geometry, material);
-    sphere6.position.set(-2, 0, -1.7);
-    scene.add(sphere6);
-    scene.add(sphere6);
-
-    sphere7 = new THREE.Mesh(geometry, material);
-    sphere7.position.set(-5, 0, 1);
-    scene.add(sphere7);
-    scene.add(sphere7);
-
-    sphere7 = new THREE.Mesh(geometry, material);
-    sphere7.position.set(-5, 0, 1);
-    scene.add(sphere7);
-    scene.add(sphere7);
-
-    sphere8 = new THREE.Mesh(geometry, material);
-    sphere8.position.set(-6, 0, 5);
-    scene.add(sphere8);
-    scene.add(sphere8);
-
-    sphere9 = new THREE.Mesh(geometry, material);
-    sphere9.position.set(-4, 0, 8.5);
-    scene.add(sphere9);
-    scene.add(sphere9);
-
-    let loader = new THREE.OBJLoader();
-
-    loader.load('../images/objects/Toilet.obj', (object) => {
-        let bath = object;
-        // scene.add(bath);
-        bath.traverse(function(node) {
-            if (node.material) {
-                node.material.side = THREE.DoubleSide;
-            }
-        });
-        bath.scale.x = 0.5;
-        bath.scale.y = 0.5;
-        bath.scale.z = 0.5;
-    });
-
-    let ambient = new THREE.AmbientLight( 0xffffff, 0.7 );
-    scene.add( ambient );
-
-    let spotLight = new THREE.SpotLight(0xffffff, 1);
-    spotLight.position.set(10, 10, 15);
-    spotLight.angle = Math.PI / 4;
-    spotLight.penumbra = 0.05;
-    spotLight.decay = 2;
-    spotLight.distance = 200;
-    spotLight.castShadow = true;
-    spotLight.shadow.mapSize.width = 1024;
-    spotLight.shadow.mapSize.height = 1024;
-    spotLight.shadow.camera.near = 10;
-    spotLight.shadow.camera.far = 200;
-    scene.add(spotLight);
-
-    let lightHelper = new THREE.SpotLightHelper(spotLight);
-    // scene.add(lightHelper);
-    let shadowCameraHelper = new THREE.CameraHelper(spotLight.shadow.camera);
-    // scene.add(shadowCameraHelper);
-
-    camera.position.set(0, 0, 100);
-    controls = new OrbitControls(camera, renderer.domElement);
-    controls.addEventListener('change', render);
-    controls.minDistance = 20;
-    controls.maxDistance = 500;
-    controls.enablePan = false;
-}
-
-function animate() {
-    requestAnimationFrame(animate);
-    controls.update();
-    render();
-}
-
-function onMouseMove( event ) {
-    mouse.x = ( event.clientX / window.innerWidth ) * 2 - 1;
-    mouse.y = - ( event.clientY / window.innerHeight ) * 2 + 1;
-    raycaster.setFromCamera(mouse, camera);
-    let intersects = raycaster.intersectObjects( objects );
-    if (intersects.length > 0 ) {
-        intersects[0].object.material.color.set(0x00ffff);
+    resize = () => {
+        let w = window.innerWidth;
+        let h = window.innerHeight;
+        renderer.setSize(w, h);
+        camera.aspect = w / h;
+        camera.updateProjectionMatrix();
     }
 }
-
-function render() {
-
-    renderer.render(scene, camera);
-}
-
-init();
-animate();
-
-window.addEventListener('resize', resize);
-
-function resize() {
-    let w = window.innerWidth;
-    let h = window.innerHeight;
-    renderer.setSize(w, h);
-    camera.aspect = w / h;
-    camera.updateProjectionMatrix();
-}
-
-window.addEventListener( 'mousemove', onMouseMove, false );
-

@@ -1,3 +1,5 @@
+import {Renderer} from "./model";
+
 require('../scss/app.scss');
 
 window.noZensmooth = true;
@@ -12,3 +14,9 @@ require('./common/respond.js');
 require('./field/phone.js');
 require('../components/smart-tabs/smart-tabs');
 require('./model');
+
+document.addEventListener('DOMContentLoaded', () => {
+    let render = new Renderer({
+        container: '#container'
+    });
+});
