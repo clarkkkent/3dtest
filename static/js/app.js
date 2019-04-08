@@ -19,4 +19,6 @@ document.addEventListener('DOMContentLoaded', () => {
     let render = new Renderer({
         container: '#container'
     });
+
+    render.render();
 });
