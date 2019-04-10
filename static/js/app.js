@@ -15,10 +15,12 @@ require('./field/phone.js');
 require('../components/smart-tabs/smart-tabs');
 require('./model');
 
-document.addEventListener('DOMContentLoaded', () => {
-    let render = new Renderer({
-        container: '#container'
-    });
+let canvas = new Renderer({
+    container: '#container'
+});
 
-    render.render();
+document.addEventListener('DOMContentLoaded', () => {
+    setTimeout(() => {
+        canvas.render();
+    }, 400);
 });

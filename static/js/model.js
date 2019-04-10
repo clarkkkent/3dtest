@@ -3,55 +3,63 @@ import {PerspectiveCamera} from "three";
 import {TextureLoader} from "three";
 import {TweenMax} from 'gsap';
 import anime from 'animejs/lib/anime.es.js';
-
-let scene;
-let camera;
-let renderer;
-let light;
-let texture;
 let OrbitControls = require('three-orbit-controls')(THREE);
-let controls;
-let mouse = new THREE.Vector2();
-let raycaster = new THREE.Raycaster();
-let objects = [];
-
 
 export class Renderer {
+    camera;
+    scene;
+    renderer;
+    cameraPosition = {
+        x: 0,
+        y: 0,
+        z: 10
+    };
+    sphere;
+    geometry;
+    material;
+
     constructor(options) {
         this.container = document.querySelector(options.container);
-        this.init();
-        this.animate();
     }
 
-    init = () => {
+    render() {
+        this.delete();
+        this.initData();
+        this.animate();
+    };
+
+    animate = () => {
+        requestAnimationFrame(this.animate);
+        this.initRender();
+    };
+
+    delete() {
+        let blocks = this.container.children;
+        if (blocks.length > 0) {
+            this.container.removeChild(this.renderer.domElement);
+        }
+    };
+
+    initData() {
         this.initScene();
-        this.initRenderer();
-        this.initCamera();
         this.initLights();
         this.addObjects();
-        window.addEventListener('resize', this.resize);
-        window.addEventListener('mousemove', this.onMouseMove);
-    };
+        this.initCamera(this.cameraPosition);
+        this.initRenderer();
+    }
 
-    initScene = () => {
-        scene = new THREE.Scene({alpha: true});
-    };
+    initScene() {
+        this.scene = new THREE.Scene();
+    }
 
-    initCamera = () => {
-        camera = new PerspectiveCamera(70, window.innerWidth/window.innerHeight, 0.01, 1000);
-        camera.position.set(0,0,100);
-        controls = new OrbitControls(camera);
+    initCamera(cameraPosition) {
+        this.camera = new THREE.PerspectiveCamera(70, this.container.clientWidth/this.container.clientHeight, 0.001, 1000);
+        this.camera.position.set(cameraPosition.x, cameraPosition.y, cameraPosition.z);
+        let controls = new OrbitControls(this.camera);
         controls.update();
-    };
+    }
 
-    initRenderer = () => {
-        renderer = new THREE.WebGLRenderer();
-        renderer.setPixelRatio(window.devicePixelRatio);
-        renderer.setSize(window.innerWidth, window.innerHeight);
-        this.container.appendChild(renderer.domElement);
-    };
-
-    initLights = () => {
+    initLights() {
         let spotLight = new THREE.SpotLight(0xffffff, 1.4);
         spotLight.position.set(10, 40, 15);
         spotLight.angle = Math.PI / 4;
@@ -63,75 +71,38 @@ export class Renderer {
         spotLight.shadow.mapSize.height = 1024;
         spotLight.shadow.camera.near = 10;
         spotLight.shadow.camera.far = 200;
-        scene.add(spotLight);
+        this.scene.add(spotLight);
 
         let ambient = new THREE.AmbientLight(0xffffff, 0.9);
-        scene.add(ambient);
+        this.scene.add(ambient);
 
         let lightHelper = new THREE.SpotLightHelper(spotLight);
-        // scene.add(lightHelper);
+        // this.scene.add(lightHelper);
 
-    };
 
-    render = () => {
-        camera.lookAt(scene.position);
-        renderer.render(scene, camera);
-        this.resize();
-    };
+    }
 
-    animate = () => {
-        requestAnimationFrame(this.animate);
-        this.render();
-        controls.update();
-    };
+    initRenderer() {
+        this.renderer = new THREE.WebGLRenderer();
+        this.renderer.setPixelRatio(window.devicePixelRatio);
+        this.renderer.setSize(this.container.clientWidth, this.container.clientHeight);
+        this.container.appendChild(this.renderer.domElement);
+    }
 
-    resize = () => {
-        let w = window.innerWidth;
-        let h = window.innerHeight;
-        renderer.setSize(w, h);
-        camera.aspect = w / h;
-        camera.updateProjectionMatrix();
-    };
+    initRender() {
+        this.camera.lookAt(this.scene.position);
+        this.renderer.render(this.scene, this.camera);
+    }
 
-    addObjects = () => {
-        let texture = new THREE.TextureLoader().load("../images/base/texture4.jpg");
-        let geometry = new THREE.SphereGeometry(8, 32, 32);
-        let material = new THREE.MeshPhongMaterial({
-            color: 0xffffff,
+    addObjects() {
+        let texture = new THREE.TextureLoader().load('../images/base/texture4.jpg');
+        this.geometry = new THREE.SphereGeometry(1, 64, 64);
+        this.material = new THREE.MeshPhongMaterial({
             map: texture,
-            transparent: true
+            color: 0xffffff
         });
-        let sphere = new THREE.Mesh(geometry, material);
-        sphere.position.set(0, 0, 0);
-        scene.add(sphere);
-        objects.push(sphere);
-    };
-
-    onMouseMove = (event) =>  {
-        mouse.x = ( event.clientX / window.innerWidth ) * 2 - 1;
-        mouse.y = - ( event.clientY / window.innerHeight ) * 2 + 1;
-        raycaster.setFromCamera(mouse, camera);
-        let intersects = raycaster.intersectObjects( objects );
-        if (intersects.length > 0) {
-            anime({
-                targets: intersects[0].object.material,
-                opacity: {
-                    value: .7,
-                    duration: 300,
-                    easing: 'linear'
-                }
-                }
-            )
-        } else {
-            anime({
-                    targets: objects[0].material,
-                    opacity: {
-                        value: 1,
-                        duration: 300,
-                        easing: 'linear'
-                    }
-                }
-            )
-        }
+        this.sphere = new THREE.Mesh(this.geometry, this.material);
+        this.sphere.position.set(0, 0, 0);
+        this.scene.add(this.sphere);
     }
 }
