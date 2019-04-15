@@ -4,6 +4,8 @@ import {TextureLoader} from "three";
 import {TweenMax} from 'gsap';
 import anime from 'animejs/lib/anime.es.js';
 let OrbitControls = require('three-orbit-controls')(THREE);
+let OBJLoader = require('three-obj-loader');
+OBJLoader(THREE);
 
 export class Renderer {
     camera;
@@ -17,6 +19,7 @@ export class Renderer {
     sphere;
     geometry;
     material;
+    object;
 
     constructor(options) {
         this.container = document.querySelector(options.container);
@@ -78,12 +81,10 @@ export class Renderer {
 
         let lightHelper = new THREE.SpotLightHelper(spotLight);
         // this.scene.add(lightHelper);
-
-
     }
 
     initRenderer() {
-        this.renderer = new THREE.WebGLRenderer();
+        this.renderer = new THREE.WebGLRenderer({antialias:true});
         this.renderer.setPixelRatio(window.devicePixelRatio);
         this.renderer.setSize(this.container.clientWidth, this.container.clientHeight);
         this.container.appendChild(this.renderer.domElement);
@@ -96,13 +97,9 @@ export class Renderer {
 
     addObjects() {
         let texture = new THREE.TextureLoader().load('../images/base/texture4.jpg');
-        this.geometry = new THREE.SphereGeometry(1, 64, 64);
-        this.material = new THREE.MeshPhongMaterial({
-            map: texture,
-            color: 0xffffff
+        let loader = new THREE.OBJLoader();
+            loader.load('static/images/objects/IronMan.obj', (object) => {
+            this.scene.add(object);
         });
-        this.sphere = new THREE.Mesh(this.geometry, this.material);
-        this.sphere.position.set(0, 0, 0);
-        this.scene.add(this.sphere);
     }
 }
