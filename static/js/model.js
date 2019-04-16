@@ -20,6 +20,8 @@ export class Renderer {
     geometry;
     material;
     object;
+    texture;
+
 
     constructor(options) {
         this.container = document.querySelector(options.container);
@@ -96,10 +98,13 @@ export class Renderer {
     }
 
     addObjects() {
-        let texture = new THREE.TextureLoader().load('../images/base/texture4.jpg');
-        let loader = new THREE.OBJLoader();
-            loader.load('static/images/objects/IronMan.obj', (object) => {
-            this.scene.add(object);
+        this.texture = new THREE.TextureLoader().load('../images/base/texture4.jpg');
+        this.geometry = new THREE.SphereGeometry(1,64,64);
+        this.material = new THREE.MeshPhongMaterial({
+           map: this.texture,
+           color: 0xffffff
         });
+        this.sphere = new THREE.Mesh(this.geometry, this.material);
+        this.scene.add(this.sphere);
     }
 }
