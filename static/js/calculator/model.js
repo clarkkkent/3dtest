@@ -2,7 +2,10 @@ import * as THREE from 'three';
 import {PerspectiveCamera} from "three";
 import {TextureLoader} from "three";
 import {TweenMax} from 'gsap';
-import anime from 'animejs/lib/anime.es.js';
+
+import Empty from './items/empty.js';
+import Bead from './items/bead.js';
+import Item from './items/item.js';
 let OrbitControls = require('three-orbit-controls')(THREE);
 let OBJLoader = require('three-obj-loader');
 OBJLoader(THREE);
@@ -14,12 +17,12 @@ export class Renderer {
     cameraPosition = {
         x: 0,
         y: 0,
-        z: 10
+        z: 100
     };
     sphere;
-    geometry;
-    material;
-    object;
+    geometries;
+    materials;
+    objects;
     texture;
 
 
@@ -27,8 +30,9 @@ export class Renderer {
         this.container = document.querySelector(options.container);
     }
 
-    render() {
+    render(objects) {
         this.delete();
+        this.objects = objects;
         this.initData();
         this.animate();
     };
@@ -46,11 +50,11 @@ export class Renderer {
     };
 
     initData() {
+        this.initRenderer();
         this.initScene();
         this.initLights();
         this.addObjects();
         this.initCamera(this.cameraPosition);
-        this.initRenderer();
     }
 
     initScene() {
@@ -98,13 +102,13 @@ export class Renderer {
     }
 
     addObjects() {
-        this.texture = new THREE.TextureLoader().load('../images/base/texture4.jpg');
-        this.geometry = new THREE.SphereGeometry(1,64,64);
-        this.material = new THREE.MeshPhongMaterial({
-           map: this.texture,
-           color: 0xffffff
-        });
-        this.sphere = new THREE.Mesh(this.geometry, this.material);
-        this.scene.add(this.sphere);
+        console.log(this.objects);
+        for (let i = 0; i < this.objects.length; i++) {
+            let geometry = new THREE.SphereGeometry(this.objects[i].item.diameter/2,64, 64);
+            let material = new THREE.MeshPhongMaterial({color: 0xffffff});
+            let mesh = new THREE.Mesh(geometry, material);
+            mesh.position.set(this.objects[i].x, this.objects[i].y, this.objects[i].z);
+            this.scene.add(mesh);
+        }
     }
 }
