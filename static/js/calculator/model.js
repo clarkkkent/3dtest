@@ -19,11 +19,10 @@ export class Renderer {
         y: 0,
         z: 100
     };
-    sphere;
-    geometries;
+    meshs = [];
     materials;
     objects;
-    texture;
+
 
 
     constructor(options) {
@@ -103,12 +102,15 @@ export class Renderer {
 
     addObjects() {
         console.log(this.objects);
+
         for (let i = 0; i < this.objects.length; i++) {
-            let geometry = new THREE.SphereGeometry(this.objects[i].item.diameter/2,64, 64);
-            let material = new THREE.MeshPhongMaterial({color: 0xffffff});
-            let mesh = new THREE.Mesh(geometry, material);
-            mesh.position.set(this.objects[i].x, this.objects[i].y, this.objects[i].z);
-            this.scene.add(mesh);
+            if (this.objects[i].item instanceof Empty) {
+                let geometry = new THREE.SphereGeometry(this.objects[i].item.diameter/2,64, 64);
+                let material = new THREE.MeshPhongMaterial({color: 0xffffff});
+                let mesh = new THREE.Mesh(geometry, material);
+                mesh.position.set(this.objects[i].x, this.objects[i].y, this.objects[i].z);
+                this.scene.add(mesh);
+            }
         }
     }
 }
