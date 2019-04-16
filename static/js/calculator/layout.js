@@ -21,7 +21,7 @@ export default class Layout {
   }
 
   getWristRadius() {
-     return this.wristSize + Math.PI * 2
+     return this.wristSize / (Math.PI * 2)
   }
 
   getLineRadius() {
@@ -88,12 +88,10 @@ export default class Layout {
       let y = this.getLineRadius() * Math.cos(angle * (Math.PI/180));
       let z = item.getAtTop() - this.beadSize / 2;
 
-      console.log(x, y, z);
-
       coordinatedItems.push(new Coordinated(item, x, y, z));
 
       lengthAccumulated += diameter;
-    }, );
+    }, this.items);
     return coordinatedItems;
   }
 

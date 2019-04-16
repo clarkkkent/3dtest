@@ -21,8 +21,6 @@ let canvas = new Renderer({
 });
 
 let layout = new Layout(canvas);
-layout.render();
-
 document.addEventListener('DOMContentLoaded', () => {
     setTimeout(() => {
         layout.render();
