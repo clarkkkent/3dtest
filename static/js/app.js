@@ -1,4 +1,5 @@
 import {Renderer} from "./model";
+import Layout from "./calculator/layout";
 
 require('../scss/app.scss');
 
@@ -18,6 +19,8 @@ require('./model');
 let canvas = new Renderer({
     container: '#container'
 });
+
+let layout = new Layout(canvas);
 
 document.addEventListener('DOMContentLoaded', () => {
     setTimeout(() => {
