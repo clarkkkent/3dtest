@@ -101,5 +101,6 @@ export default class Layout {
     this.fillEmpty();
     let coordinatedItems = this.place(this.items, this.lineLengthCurrent);
     this.renderer.render(coordinatedItems);
+    // this.renderer.render([new Coordinated(new Empty(10), 0, 0, 0), new Coordinated(new Empty(10), 10, 0, 0)]);
   }
 }

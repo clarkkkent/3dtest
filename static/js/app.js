@@ -1,4 +1,4 @@
-import {Renderer} from "./model";
+import {Renderer} from "./calculator/model";
 import Layout from "./calculator/layout";
 
 require('../scss/app.scss');
@@ -14,7 +14,7 @@ require('./common/respond.js');
 
 require('./field/phone.js');
 require('../components/smart-tabs/smart-tabs');
-require('./model');
+require('./calculator/model');
 
 let canvas = new Renderer({
     container: '#container'
@@ -25,6 +25,6 @@ layout.render();
 
 document.addEventListener('DOMContentLoaded', () => {
     setTimeout(() => {
-        canvas.render();
+        layout.render();
     }, 400);
 });
