@@ -1,8 +1,38 @@
 .index-main {
+  &__inner {
+    display: flex;
+  }
   &__container {
     display: block;
-    height: 300px;
-    width: 400px;
+    height: 500px;
+    width: 500px;
     font-size: 0;
+    margin-right: 200px;
+  }
+
+  &__options {
+    display: flex;
+    flex-wrap: wrap;
+    width: 800px;
+
+
+    //&.active {
+    //  opacity: 1;
+    //  transform: translate3d(0, 0, 0);
+    //}
+  }
+
+  &__options-item {
+    width: 200px;
+    height: 300px;
+    margin-right: 20px;
+    margin-bottom: 20px;
+    opacity: 0;
+    position: relative;
+    top: 30px;
+    background: {
+      position: center;
+      size: cover;
+    };
   }
 }

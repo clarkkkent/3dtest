@@ -1,5 +1,6 @@
 import {Renderer} from "./calculator/model";
 import Layout from "./calculator/layout";
+import UI from "./calculator/ui";
 
 require('../scss/app.scss');
 
@@ -20,9 +21,15 @@ let canvas = new Renderer({
     container: '#container'
 });
 
+
+
 let layout = new Layout(canvas);
 document.addEventListener('DOMContentLoaded', () => {
     setTimeout(() => {
         layout.render();
     }, 400);
+});
+
+document.addEventListener('textureSelected', () => {
+    layout.render();
 });
