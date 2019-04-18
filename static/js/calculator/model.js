@@ -181,18 +181,38 @@ export class Renderer {
 
     addObjects() {
         //Добавление геометрических объектов в сцену
-        for (let i = 0; i < this.objects.length; i++) {
-            if (this.objects[i].item instanceof Empty) {
-                let geometry = new THREE.SphereGeometry(this.objects[i].item.diameter / 2, 64, 64);
-                let texture = new THREE.TextureLoader().load('../images/base/texture4.jpg');
-                let material = new THREE.MeshPhongMaterial({color: 0xffffff, map: texture, transparent: true});
-                let mesh = new THREE.Mesh(geometry, material);
-                this.meshs.push(mesh);
-                mesh.position.set(this.objects[i].x, this.objects[i].y, this.objects[i].z);
-                this.scene.add(mesh);
+        this.createGeometry();
+    }
+
+    rePaint(objects) {
+        //Перерисовка канваса при изменении
+        this.meshs.forEach(mesh => {
+            this.scene.remove(mesh)
+        });
+        if (objects) {
+            this.objects = objects;
+        } else {
+            this.objects = [];
+        }
+        this.createGeometry();
+    }
+
+    createGeometry = () => {
+        //Логика геометрии
+        if (this.objects.length > 0) {
+            for (let i = 0; i < this.objects.length; i++) {
+                if (this.objects[i].item instanceof Empty) {
+                    let geometry = new THREE.SphereGeometry(this.objects[i].item.diameter / 2, 64, 64);
+                    let texture = new THREE.TextureLoader().load('../images/base/texture4.jpg');
+                    let material = new THREE.MeshPhongMaterial({color: 0xffffff, map: texture, transparent: true});
+                    let mesh = new THREE.Mesh(geometry, material);
+                    this.meshs.push(mesh);
+                    mesh.position.set(this.objects[i].x, this.objects[i].y, this.objects[i].z);
+                    this.scene.add(mesh);
+                }
             }
         }
-    }
+    };
 
     onMouseMove = (event) => {
         this.mouse.x = (event.clientX / this.container.clientWidth) * 2 - 1;

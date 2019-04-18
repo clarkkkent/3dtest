@@ -31,5 +31,5 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 document.addEventListener('textureSelected', () => {
-    layout.render();
+    canvas.rePaint();
 });

@@ -23,7 +23,5 @@ export default class UI {
                 document.dispatchEvent(event);
             })
         })
-
-
     }
 }
