@@ -160,9 +160,9 @@ export class Renderer {
         if (this.intersects.length > 0) {
             this.intersects.forEach(intersect => {
                 this.meshs.forEach(mesh => {
-                    mesh.material.opacity = 1;
+                    mesh.material.opacity = 0.5;
                 });
-                intersect.object.material.opacity = 0.5;
+                intersect.object.material.opacity = 1;
                 this.activeMesh = this.meshs.indexOf(intersect.object);
             });
             this.meshSelected = true;
