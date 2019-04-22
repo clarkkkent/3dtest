@@ -44,7 +44,6 @@ export class Renderer {
         //Основной метод...Используется для создания канваса в документе
         this.delete();
         this.objects = objects;
-        console.log(objects);
         this.initData();
         this.animate();
         this.container.addEventListener('mousemove', this.onMouseMove, false);
@@ -180,20 +179,21 @@ export class Renderer {
     };
 
     addObjects() {
+
+        if(this.meshs.length > 0) {
+            this.createGeometry();
+        } else {
+            this.rePaint();
+        }
         //Добавление геометрических объектов в сцену
-        this.createGeometry();
+
     }
 
-    rePaint(objects) {
+    rePaint() {
         //Перерисовка канваса при изменении
         this.meshs.forEach(mesh => {
             this.scene.remove(mesh)
         });
-        if (objects) {
-            this.objects = objects;
-        } else {
-            this.objects = [];
-        }
         this.createGeometry();
     }
 

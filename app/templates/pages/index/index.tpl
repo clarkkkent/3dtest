@@ -6,20 +6,20 @@
 
         </div>
         <ul class="index-main__options" id="options">
-            <li class="index-main__options-item" style="background-image: url('../images/base/texture1.jpg')">
-
+            <li class="index-main__options-item">
+                <img src="../images/base/texture1.jpg" alt="">
             </li>
-            <li class="index-main__options-item" style="background-image: url('../images/base/texture2.jpg')">
-
+            <li class="index-main__options-item">
+                <img src="../images/base/texture2.jpg" alt="">
             </li>
-            <li class="index-main__options-item" style="background-image: url('../images/base/texture3.jpg')">
-
+            <li class="index-main__options-item">
+                <img src="../images/base/texture3.jpg" alt="">
             </li>
-            <li class="index-main__options-item" style="background-image: url('../images/base/texture4.jpg')">
-
+            <li class="index-main__options-item">
+                <img src="../images/base/texture4.jpg" alt="">
             </li>
-            <li class="index-main__options-item" style="background-image: url('../images/base/texture1.jpg')">
-
+            <li class="index-main__options-item">
+                <img src="../images/base/texture1.jpg" alt="">
             </li>
         </ul>
     </div>

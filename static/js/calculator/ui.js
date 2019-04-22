@@ -19,7 +19,11 @@ export default class UI {
     selectTexture() {
         this.items.forEach(item => {
             item.addEventListener('click', () => {
-                let event = new CustomEvent('textureSelected', {});
+                let event = new CustomEvent('textureSelected', {
+                    detail: {
+                        texture: item.querySelector('img').src
+                    }
+                });
                 document.dispatchEvent(event);
             })
         })

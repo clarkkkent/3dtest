@@ -30,6 +30,4 @@ document.addEventListener('DOMContentLoaded', () => {
     }, 400);
 });
 
-document.addEventListener('textureSelected', () => {
-    canvas.rePaint();
-});
+

@@ -1,6 +1,7 @@
 'use strict';
 
 import Empty from "./items/empty";
+import Bead from "./items/bead";
 import Coordinated from "./coordinated";
 
 export default class Layout {
@@ -13,12 +14,21 @@ export default class Layout {
    * Renderer
    */
   renderer;
+  selectedObject;
 
   items = [];
 
   constructor(renderer) {
-    this.renderer = renderer
+    this.renderer = renderer;
+    this.bind();
   }
+
+  bind = () => {
+    document.addEventListener('clicked', (event) => {
+      this.selectedObject = event.detail.clickedObject;
+    });
+    document.addEventListener('textureSelected', this.replace);
+  };
 
   getWristRadius() {
      return this.wristSize / (Math.PI * 2)
@@ -79,7 +89,6 @@ export default class Layout {
   place() {
     let coordinatedItems = [];
     let lengthAccumulated = 0;
-
     this.items.forEach((item) => {
       let diameter = this.itemOnLineWidth(item);
       let angle = this.lengthToAngle(lengthAccumulated + diameter/2);
@@ -95,9 +104,18 @@ export default class Layout {
     return coordinatedItems;
   }
 
+  replace = (event) => {
+    this.items[this.selectedObject] = new Bead(10, event.detail.texture);
+    this.render();
+    console.log(this.items);
+  };
+
   render() {
-    this.fillEmpty();
+    if (this.items.length === 0) {
+      this.fillEmpty();
+    }
     let coordinatedItems = this.place(this.items, this.lineLengthCurrent);
+
     this.renderer.render(coordinatedItems);
     // this.renderer.render([new Coordinated(new Empty(10), 0, 0, 0), new Coordinated(new Empty(10), 10, 0, 0)]);
   }
