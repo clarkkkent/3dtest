@@ -8,7 +8,7 @@ export default class Bead extends DefaultItem {
   constructor(diameter, texture) {
     super();
     this.diameter = diameter;
-    this.atTop = diameter/2;
+    this.atTop = 0;
     this.texture = texture;
   }
 

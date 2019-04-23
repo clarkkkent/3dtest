@@ -2,7 +2,7 @@
 
 export default class DefaultItem {
   diameter = 10;
-  atTop = 5;
+  atTop = 0;
   hasGap = false;
 
   getDiameter() {
@@ -10,7 +10,7 @@ export default class DefaultItem {
   }
 
   getAtTop() {
-    return this.diameter;
+    return this.atTop;
   }
 
   getHasGap() {

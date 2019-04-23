@@ -26,6 +26,7 @@ export default class Layout {
   bind = () => {
     document.addEventListener('clicked', (event) => {
       this.selectedObject = event.detail.clickedObject;
+      console.log(this.items);
     });
     document.addEventListener('textureSelected', this.replace);
   };
@@ -95,8 +96,8 @@ export default class Layout {
 
       let x = this.getLineRadius() * Math.sin(angle * (Math.PI/180));
       let y = this.getLineRadius() * Math.cos(angle * (Math.PI/180));
-      let z = item.getAtTop() - this.beadSize / 2;
-
+      let z = item.getAtTop();
+      console.log(item.getAtTop());
       coordinatedItems.push(new Coordinated(item, x, y, z));
 
       lengthAccumulated += diameter;
@@ -105,17 +106,29 @@ export default class Layout {
   }
 
   replace = (event) => {
-    this.items[this.selectedObject] = new Bead(10, event.detail.texture);
+    this.items[this.selectedObject] = new Bead(14, event.detail.texture);
+    this.lineLengthCurrent = this.calculateLength(this.items);
+    if (!this.getIsAllowedLength(this.lineLengthCurrent)) {
+       this.changeQuantity();
+    }
+
     this.render();
-    console.log(this.items);
   };
+
+  changeQuantity() {
+    if (this.lineLengthCurrent < this.getLineLengthBase()) {
+      this.items.push(new Empty(this.beadSize));
+    } else {
+      this.items.splice(-1, 1);
+    }
+    this.lineLengthCurrent = this.calculateLength(this.items);
+  }
 
   render() {
     if (this.items.length === 0) {
       this.fillEmpty();
     }
     let coordinatedItems = this.place(this.items, this.lineLengthCurrent);
-
     this.renderer.render(coordinatedItems);
     // this.renderer.render([new Coordinated(new Empty(10), 0, 0, 0), new Coordinated(new Empty(10), 10, 0, 0)]);
   }

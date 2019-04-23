@@ -46,6 +46,7 @@ export class Renderer {
         this.objects = objects;
         this.initData();
         this.animate();
+        console.log(this.meshs);
         this.container.addEventListener('mousemove', this.onMouseMove, false);
         this.container.addEventListener('click', this.onMouseClick, false);
     };
@@ -66,6 +67,7 @@ export class Renderer {
             this.cameraPosition.y = this.camera.position.y;
             this.cameraPosition.z = this.camera.position.z;
         }
+        this.meshs = [];
     };
 
     initData() {
@@ -179,14 +181,12 @@ export class Renderer {
     };
 
     addObjects() {
-
-        if(this.meshs.length > 0) {
+        if (this.meshs.length > 0) {
             this.createGeometry();
         } else {
             this.rePaint();
         }
         //Добавление геометрических объектов в сцену
-
     }
 
     rePaint() {
@@ -203,8 +203,15 @@ export class Renderer {
             for (let i = 0; i < this.objects.length; i++) {
                 if (this.objects[i].item instanceof Empty) {
                     let geometry = new THREE.SphereGeometry(this.objects[i].item.diameter / 2, 64, 64);
-                    let texture = new THREE.TextureLoader().load('../images/base/texture4.jpg');
-                    let material = new THREE.MeshPhongMaterial({color: 0xffffff, map: texture, transparent: true});
+                    let material = new THREE.MeshPhongMaterial({color: 0xffffff, transparent: true, opacity: 0.7});
+                    let mesh = new THREE.Mesh(geometry, material);
+                    this.meshs.push(mesh);
+                    mesh.position.set(this.objects[i].x, this.objects[i].y, this.objects[i].z);
+                    this.scene.add(mesh);
+                } else if (this.objects[i].item instanceof Bead) {
+                    let geometry = new THREE.SphereGeometry(this.objects[i].item.diameter / 2, 64, 64);
+                    let texture = new TextureLoader().load(this.objects[i].item.texture);
+                    let material = new THREE.MeshPhongMaterial({color: 0xffffff, transparent: true, map: texture});
                     let mesh = new THREE.Mesh(geometry, material);
                     this.meshs.push(mesh);
                     mesh.position.set(this.objects[i].x, this.objects[i].y, this.objects[i].z);
